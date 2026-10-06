@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>NOHS BOSS QUEST</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:#10152d;
+color:white;
+font-family:Arial,sans-serif;
+text-align:center;
+max-width:460px;
+margin:auto;
+}
+
+h1{
+font-size:24px;
+margin:10px 0;
+}
+
+#stats{
+display:flex;
+justify-content:space-around;
+font-weight:bold;
+margin:6px 0;
+}
+
+#game{
+position:relative;
+height:380px;
+overflow:hidden;
+background:linear-gradient(135deg,#17234b,#25163d,#102f3b);
+border:3px solid #5c6cff;
+border-radius:14px;
+touch-action:none;
+}
+
+#startScreen{
+position:absolute;
+inset:0;
+z-index:100;
+background:rgba(8,12,30,.97);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+}
+
+#startScreen h2{
+font-size:25px;
+margin:5px;
+}
+
+#levelTitle{
+font-size:19px;
+font-weight:bold;
+}
+
+#levelName{
+font-size:14px;
+color:#c4caff;
+margin:5px;
+}
+
+#characters{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:6px;
+max-width:360px;
+margin:8px;
+}
+
+.character{
+width:65px;
+height:58px;
+border:2px solid #555;
+border-radius:10px;
+background:#202747;
+font-size:28px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+
+.character span{
+font-size:9px;
+}
+
+.character.selected{
+border-color:#ffd43b;
+box-shadow:0 0 10px #ffd43b;
+}
+
+.character.locked{
+opacity:.3;
+}
+
+#startButton,
+#againButton{
+border:0;
+border-radius:12px;
+padding:12px 28px;
+font-size:18px;
+font-weight:bold;
+background:#4dff88;
+color:#06140b;
+}
+
+#againButton{
+display:none;
+}
+
+#player{
+position:absolute;
+width:50px;
+height:50px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:40px;
+transform:translate(-50%,-50%);
+z-index:20;
+pointer-events:none;
+}
+
+.collectible{
+position:absolute;
+font-size:25px;
+width:32px;
+height:32px;
+display:flex;
+align-items:center;
+justify-content:center;
+transform:translate(-50%,-50%);
+z-index:10;
+}
+
+.enemy{
+position:absolute;
+font-size:34px;
+width:40px;
+height:40px;
+display:flex;
+align-items:center;
+justify-content:center;
+transform:translate(-50%,-50%);
+z-index:15;
+}
+
+.bullet{
+position:absolute;
+width:9px;
+height:9px;
+border-radius:50%;
+background:white;
+box-shadow:0 0 8px white;
+transform:translate(-50%,-50%);
+z-index:25;
+}
+
+.enemyBullet{
+position:absolute;
+width:11px;
+height:11px;
+border-radius:50%;
+background:#ff304f;
+box-shadow:0 0 12px #ff304f;
+transform:translate(-50%,-50%);
+z-index:26;
+}
+
+/* GUARDIAN */
+
+#finish{
+position:absolute;
+width:72px;
+height:100px;
+transform:translate(-50%,-50%);
+z-index:12;
+display:none;
+align-items:center;
+justify-content:center;
+font-size:58px;
+filter:
+drop-shadow(0 0 8px #00eaff)
+drop-shadow(0 0 18px #168cff)
+drop-shadow(0 0 35px #00d9ff);
+}
+
+#finish::before{
+content:"";
+position:absolute;
+width:110px;
+height:110px;
+border-radius:50%;
+background:radial-gradient(
+circle,
+rgba(255,255,255,.85) 0%,
+rgba(102,234,255,.5) 22%,
+rgba(22,140,255,.25) 48%,
+rgba(0,0,0,0) 72%
+);
+z-index:-1;
+}
+
+#message{
+min-height:34px;
+font-size:14px;
+padding:7px;
+}
+
+#controls{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:8px 12px;
+}
+
+#joystick{
+width:115px;
+height:115px;
+border-radius:50%;
+background:rgba(255,255,255,.1);
+border:2px solid rgba(255,255,255,.35);
+position:relative;
+touch-action:none;
+}
+
+#stick{
+position:absolute;
+width:52px;
+height:52px;
+border-radius:50%;
+background:#6f7cff;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+}
+
+#fireButton{
+width:110px;
+height:75px;
+border:0;
+border-radius:18px;
+background:#ff4d62;
+color:white;
+font-size:20px;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h1>NOHS BOSS QUEST</h1>
+
+<div id="stats">
+<div id="health">❤️❤️❤️</div>
+<div id="score">0/5</div>
+<div id="level">LEVEL 1</div>
+</div>
+
+<div id="game">
+
+<div id="startScreen">
+
+<h2>NOHS BOSS QUEST</h2>
+
+<div id="levelTitle">LEVEL 1</div>
+<div id="levelName">First Battle</div>
+
+<div>Choose a character</div>
+
+<div id="characters"></div>
+
+<button id="startButton">START LEVEL</button>
+<button id="againButton">PLAY AGAIN</button>
+
+</div>
+
+<div id="player">🦸</div>
+
+<div id="finish">🧙</div>
+
+</div>
+
+<div id="message">
+Choose a character and press START LEVEL.
+</div>
+
+<div id="controls">
+
+<div id="joystick">
+<div id="stick"></div>
+</div>
+
+<button id="fireButton">🔥 FIRE</button>
+
+</div>
+
+<script>
+
+var characters=[
+["🦸","Hero"],
+["🧛","Vampire"],
+["🥷","Ninja"],
+["🧙","Mage"],
+["🧝","Elf"],
+["🐉","Dragon"],
+["👹","Demon"],
+["🦅","Sky"],
+["🌊","Ocean"],
+["🗿","Stone"]
+];
+
+var levelNames=[
+"First Battle",
+"Night Attack",
+"Shadow Battle",
+"Arcane War",
+"Forest War",
+"Dragon Battle",
+"Demon Battle",
+"Sky Battle",
+"Ocean Battle",
+"Final Boss"
+];
+
+var collectibleTypes=[
+["🪙","⭐","💎"],
+["⭐","💎","🔥"],
+["💎","🔥","👑"],
+["🔥","👑","🪙"],
+["👑","🪙","⭐"],
+["🪙","💎","👑"],
+["⭐","🔥","🪙"],
+["💎","👑","⭐"],
+["🔥","🪙","💎"],
+["👑","⭐","🔥"]
+];
+
+var finishPlaces=[
+[.18,.20],
+[.82,.20],
+[.18,.50],
+[.82,.50],
+[.18,.80],
+[.50,.18],
+[.82,.80],
+[.50,.82],
+[.50,.50],
+[.78,.35]
+];
+
+var currentLevel=1;
+var selectedCharacter=0;
+
+var health=3;
+var score=0;
+var playing=false;
+
+var playerX=0;
+var playerY=0;
+
+var finishX=0;
+var finishY=0;
+
+var collectibles=[];
+var enemies=[];
+var bullets=[];
+var enemyBullets=[];
+
+var enemyBulletActive=false;
+var enemyBulletTimer=0;
+var shooterIndex=0;
+
+var moveX=0;
+var moveY=0;
+var moving=false;
+var joystickActive=false;
+
+var lastTime=0;
+
+/* GUARDIAN ENDING STATE */
+
+var guardianEntering=false;
+var guardianProgress=0;
+var guardianStartX=0;
+var guardianStartY=0;
+
+var guardianLeaving=false;
+var guardianLeaveProgress=0;
+
+var game=document.getElementById("game");
+var player=document.getElementById("player");
+var finish=document.getElementById("finish");
+
+var healthEl=document.getElementById("health");
+var scoreEl=document.getElementById("score");
+var levelEl=document.getElementById("level");
+
+var messageEl=document.getElementById("message");
+
+var startScreen=document.getElementById("startScreen");
+var levelTitle=document.getElementById("levelTitle");
+var levelName=document.getElementById("levelName");
+
+var charactersEl=document.getElementById("characters");
+
+var startButton=document.getElementById("startButton");
+var againButton=document.getElementById("againButton");
+
+var joystick=document.getElementById("joystick");
+var stick=document.getElementById("stick");
+
+var fireButton=document.getElementById("fireButton");
+
+
+function updateStats(){
+
+healthEl.textContent="❤️".repeat(Math.max(0,health));
+
+scoreEl.textContent=score+"/5";
+
+levelEl.textContent="LEVEL "+currentLevel;
+
+}
+
+
+function showCharacters(){
+
+charactersEl.innerHTML="";
+
+for(var i=0;i<characters.length;i++){
+
+var c=document.createElement("div");
+
+c.className="character";
+
+if(i>=currentLevel){
+c.classList.add("locked");
+}
+
+if(i===selectedCharacter && i<currentLevel){
+c.classList.add("selected");
+}
+
+c.innerHTML=
+characters[i][0]+
+"<span>"+characters[i][1]+"</span>";
+
+(function(index){
+
+c.onclick=function(){
+
+if(index<currentLevel){
+
+selectedCharacter=index;
+
+showCharacters();
+
+}
+
+};
+
+})(i);
+
+charactersEl.appendChild(c);
+
+}
+
+}
+
+
+function showStartScreen(){
+
+playing=false;
+
+startScreen.style.display="flex";
+
+levelTitle.textContent="LEVEL "+currentLevel;
+
+levelName.textContent=levelNames[currentLevel-1];
+
+showCharacters();
+
+startButton.style.display="inline-block";
+
+againButton.style.display="none";
+
+messageEl.textContent=
+"Choose a character and press START LEVEL.";
+
+}
+
+
+function clearGame(){
+
+collectibles.forEach(function(item){
+if(item.element)item.element.remove();
+});
+
+enemies.forEach(function(item){
+if(item.element)item.element.remove();
+});
+
+bullets.forEach(function(item){
+if(item.element)item.element.remove();
+});
+
+enemyBullets.forEach(function(item){
+if(item.element)item.element.remove();
+});
+
+collectibles=[];
+enemies=[];
+bullets=[];
+enemyBullets=[];
+
+enemyBulletActive=false;
+enemyBulletTimer=0;
+shooterIndex=0;
+
+/* Guardian reset */
+
+guardianEntering=false;
+guardianProgress=0;
+guardianStartX=0;
+guardianStartY=0;
+
+guardianLeaving=false;
+guardianLeaveProgress=0;
+
+finish.style.display="none";
+finish.style.opacity="1";
+finish.style.transform="translate(-50%,-50%) scale(1)";
+
+/* Player reset */
+
+player.style.fontSize="40px";
+player.style.opacity="1";
+player.style.transform="translate(-50%,-50%)";
+
+}
+
+
+function startLevel(){
+
+clearGame();
+
+health=3;
+score=0;
+
+updateStats();
+
+startScreen.style.display="none";
+
+player.textContent=
+characters[selectedCharacter][0];
+
+playerX=game.clientWidth/2;
+playerY=game.clientHeight/2;
+
+player.style.left=playerX+"px";
+player.style.top=playerY+"px";
+
+player.style.fontSize="40px";
+player.style.opacity="1";
+
+createCollectibles();
+createEnemies();
+createFinish();
+
+moveX=0;
+moveY=0;
+moving=false;
+
+resetStick();
+
+enemyBulletActive=false;
+
+enemyBulletTimer=currentLevel>=2?2:0;
+
+shooterIndex=0;
+
+playing=true;
+
+messageEl.textContent="Collect all 5 items.";
+
+lastTime=performance.now();
+
+requestAnimationFrame(loop);
+
+}
+
+
+function createCollectibles(){
+
+var types=collectibleTypes[currentLevel-1];
+
+for(var i=0;i<5;i++){
+
+var e=document.createElement("div");
+
+e.className="collectible";
+
+e.textContent=types[i%types.length];
+
+var x=30+Math.random()*(game.clientWidth-60);
+var y=30+Math.random()*(game.clientHeight-60);
+
+e.style.left=x+"px";
+e.style.top=y+"px";
+
+game.appendChild(e);
+
+collectibles.push({
+element:e,
+x:x,
+y:y,
+vx:(Math.random()<.5?-1:1)*(20+Math.random()*20),
+vy:(Math.random()<.5?-1:1)*(20+Math.random()*20)
+});
+
+}
+
+}
+
+
+function createEnemies(){
+
+var minSpeed=10+(currentLevel-1)*(8/9);
+
+var maxSpeed=14+(currentLevel-1)*(16/9);
+
+for(var i=0;i<3;i++){
+
+var e=document.createElement("div");
+
+e.className="enemy";
+e.textContent="👾";
+
+var x=40+Math.random()*(game.clientWidth-80);
+var y=40+Math.random()*(game.clientHeight-80);
+
+e.style.left=x+"px";
+e.style.top=y+"px";
+
+game.appendChild(e);
+
+enemies.push({
+element:e,
+x:x,
+y:y,
+speed:minSpeed+Math.random()*(maxSpeed-minSpeed),
+dead:false,
+timer:0,
+touchCooldown:0
+});
+
+}
+
+}
+
+
+function createFinish(){
+
+var p=finishPlaces[currentLevel-1];
+
+finishX=game.clientWidth*p[0];
+finishY=game.clientHeight*p[1];
+
+finish.style.left=finishX+"px";
+finish.style.top=finishY+"px";
+
+finish.style.display="none";
+
+}
+
+
+function updatePlayer(delta){
+
+if(!moving || guardianEntering || guardianLeaving){
+return;
+}
+
+var speed=110;
+
+playerX+=moveX*speed*delta;
+playerY+=moveY*speed*delta;
+
+playerX=Math.max(
+25,
+Math.min(game.clientWidth-25,playerX)
+);
+
+playerY=Math.max(
+25,
+Math.min(game.clientHeight-25,playerY)
+);
+
+player.style.left=playerX+"px";
+player.style.top=playerY+"px";
+
+}
+
+
+function updateCollectibles(delta){
+
+if(guardianEntering || guardianLeaving){
+return;
+}
+
+for(var i=collectibles.length-1;i>=0;i--){
+
+var c=collectibles[i];
+
+c.x+=c.vx*delta;
+c.y+=c.vy*delta;
+
+if(c.x<18 || c.x>game.clientWidth-18){
+c.vx*=-1;
+}
+
+if(c.y<18 || c.y>game.clientHeight-18){
+c.vy*=-1;
+}
+
+c.element.style.left=c.x+"px";
+c.element.style.top=c.y+"px";
+
+var dx=c.x-playerX;
+var dy=c.y-playerY;
+
+if(Math.sqrt(dx*dx+dy*dy)<34){
+
+c.element.remove();
+
+collectibles.splice(i,1);
+
+score++;
+
+updateStats();
+
+if(score<5){
+
+messageEl.textContent=
+"Collected! "+score+"/5";
+
+}else{
+
+finish.style.display="flex";
+
+messageEl.textContent=
+"All 5 collected! Find the GUARDIAN.";
+
+}
+
+}
+
+}
+
+}
+
+
+function updateEnemies(delta){
+
+if(guardianEntering || guardianLeaving){
+return;
+}
+
+for(var i=0;i<enemies.length;i++){
+
+var en=enemies[i];
+
+if(en.dead){
+
+en.timer-=delta;
+
+if(en.timer<=0){
+
+en.dead=false;
+
+en.x=40+Math.random()*(game.clientWidth-80);
+en.y=40+Math.random()*(game.clientHeight-80);
+
+en.element.style.left=en.x+"px";
+en.element.style.top=en.y+"px";
+en.element.style.display="flex";
+
+}
+
+continue;
+
+}
+
+var dx=playerX-en.x;
+var dy=playerY-en.y;
+
+var d=Math.sqrt(dx*dx+dy*dy);
+
+if(d>0){
+
+en.x+=(dx/d)*en.speed*delta;
+en.y+=(dy/d)*en.speed*delta;
+
+}
+
+en.element.style.left=en.x+"px";
+en.element.style.top=en.y+"px";
+
+if(en.touchCooldown>0){
+en.touchCooldown-=delta;
+}
+
+if(d<40 && en.touchCooldown<=0){
+
+health--;
+
+en.touchCooldown=1;
+
+updateStats();
+
+messageEl.textContent="💔 You were hit!";
+
+if(health<=0){
+
+gameOver();
+
+return;
+
+}
+
+}
+
+}
+
+}
+
+
+/* PLAYER FIRE */
+
+function fire(){
+
+if(!playing || guardianEntering || guardianLeaving){
+return;
+}
+
+var target=null;
+var best=Infinity;
+
+for(var i=0;i<enemies.length;i++){
+
+var en=enemies[i];
+
+if(en.dead)continue;
+
+var dx=en.x-playerX;
+var dy=en.y-playerY;
+
+var d=Math.sqrt(dx*dx+dy*dy);
+
+if(d<best){
+
+best=d;
+target=en;
+
+}
+
+}
+
+if(!target)return;
+
+var dx=target.x-playerX;
+var dy=target.y-playerY;
+
+var d=Math.sqrt(dx*dx+dy*dy);
+
+var e=document.createElement("div");
+
+e.className="bullet";
+
+e.style.left=playerX+"px";
+e.style.top=playerY+"px";
+
+game.appendChild(e);
+
+bullets.push({
+element:e,
+x:playerX,
+y:playerY,
+vx:dx/d*260,
+vy:dy/d*260,
+life:2
+});
+
+}
+
+
+function updateBullets(delta){
+
+for(var i=bullets.length-1;i>=0;i--){
+
+var b=bullets[i];
+
+b.x+=b.vx*delta;
+b.y+=b.vy*delta;
+
+b.life-=delta;
+
+b.element.style.left=b.x+"px";
+b.element.style.top=b.y+"px";
+
+var remove=false;
+
+for(var j=0;j<enemies.length;j++){
+
+var en=enemies[j];
+
+if(en.dead)continue;
+
+var dx=en.x-b.x;
+var dy=en.y-b.y;
+
+if(Math.sqrt(dx*dx+dy*dy)<25){
+
+en.dead=true;
+en.timer=3;
+en.element.style.display="none";
+
+remove=true;
+
+messageEl.textContent=
+"💥 ENEMY DESTROYED!";
+
+break;
+
+}
+
+}
+
+if(
+b.life<=0 ||
+b.x<-20 ||
+b.x>game.clientWidth+20 ||
+b.y<-20 ||
+b.y>game.clientHeight+20
+){
+
+remove=true;
+
+}
+
+if(remove){
+
+b.element.remove();
+bullets.splice(i,1);
+
+}
+
+}
+
+}
+
+
+/* ENEMY SHOOTING */
+
+function findShooter(){
+
+for(var n=0;n<enemies.length;n++){
+
+var index=(shooterIndex+n)%enemies.length;
+
+if(!enemies[index].dead){
+
+shooterIndex=(index+1)%enemies.length;
+
+return enemies[index];
+
+}
+
+}
+
+return null;
+
+}
+
+
+function fireEnemyBullet(){
+
+if(enemyBulletActive)return;
+
+var shooter=findShooter();
+
+if(!shooter)return;
+
+var dx=playerX-shooter.x;
+var dy=playerY-shooter.y;
+
+var d=Math.sqrt(dx*dx+dy*dy);
+
+if(d<1)return;
+
+var e=document.createElement("div");
+
+e.className="enemyBullet";
+
+e.style.left=shooter.x+"px";
+e.style.top=shooter.y+"px";
+
+game.appendChild(e);
+
+enemyBullets.push({
+element:e,
+x:shooter.x,
+y:shooter.y,
+vx:dx/d*90,
+vy:dy/d*90,
+life:4
+});
+
+enemyBulletActive=true;
+
+}
+
+
+function updateEnemyShooting(delta){
+
+if(currentLevel<2)return;
+
+if(guardianEntering || guardianLeaving)return;
+
+if(enemyBulletActive)return;
+
+enemyBulletTimer-=delta;
+
+if(enemyBulletTimer<=0){
+
+fireEnemyBullet();
+
+}
+
+}
+
+
+function updateEnemyBullets(delta){
+
+for(var i=enemyBullets.length-1;i>=0;i--){
+
+var b=enemyBullets[i];
+
+b.x+=b.vx*delta;
+b.y+=b.vy*delta;
+
+b.life-=delta;
+
+b.element.style.left=b.x+"px";
+b.element.style.top=b.y+"px";
+
+var dx=playerX-b.x;
+var dy=playerY-b.y;
+
+if(Math.sqrt(dx*dx+dy*dy)<28){
+
+b.element.remove();
+
+enemyBullets.splice(i,1);
+
+enemyBulletActive=false;
+enemyBulletTimer=1.5;
+
+health--;
+
+updateStats();
+
+messageEl.textContent=
+"💔 You were hit by a bullet!";
+
+if(health<=0){
+gameOver();
+}
+
+continue;
+
+}
+
+if(
+b.life<=0 ||
+b.x<-20 ||
+b.x>game.clientWidth+20 ||
+b.y<-20 ||
+b.y>game.clientHeight+20
+){
+
+b.element.remove();
+
+enemyBullets.splice(i,1);
+
+enemyBulletActive=false;
+enemyBulletTimer=1.5;
+
+}
+
+}
+
+}
+
+
+/* ==========================================
+   GUARDIAN ENDING
+   ========================================== */
+
+function updateFinish(delta){
+
+if(score<5){
+
+finish.style.display="none";
+
+return;
+
+}
+
+
+/* Guardian visible */
+
+if(!guardianEntering && !guardianLeaving){
+
+finish.style.display="flex";
+
+var dx=playerX-finishX;
+var dy=playerY-finishY;
+
+var distance=Math.sqrt(dx*dx+dy*dy);
+
+
+/* Player enters Guardian */
+
+if(distance<58){
+
+guardianEntering=true;
+
+guardianProgress=0;
+
+guardianStartX=playerX;
+guardianStartY=playerY;
+
+moving=false;
+moveX=0;
+moveY=0;
+
+resetStick();
+
+messageEl.textContent=
+"Entering Guardian...";
+
+}
+
+}
+
+
+/* Player travels into Guardian */
+
+if(guardianEntering){
+
+guardianProgress+=delta/1.5;
+
+if(guardianProgress>1){
+guardianProgress=1;
+}
+
+playerX=
+guardianStartX+
+(finishX-guardianStartX)*guardianProgress;
+
+playerY=
+guardianStartY+
+(finishY-guardianStartY)*guardianProgress;
+
+player.style.left=playerX+"px";
+player.style.top=playerY+"px";
+
+
+/* Shrink player */
+
+var playerSize=
+40-(36*guardianProgress);
+
+if(playerSize<2){
+playerSize=2;
+}
+
+player.style.fontSize=
+playerSize+"px";
+
+player.style.opacity=
+String(1-(guardianProgress*.25));
+
+
+/* Guardian grows slightly */
+
+var guardianScale=
+1+(guardianProgress*.10);
+
+finish.style.transform=
+"translate(-50%,-50%) scale("+
+guardianScale+
+")";
+
+
+/* Player is completely inside */
+
+if(guardianProgress>=1){
+
+player.style.fontSize="0px";
+player.style.opacity="0";
+
+guardianEntering=false;
+
+guardianLeaving=true;
+
+guardianLeaveProgress=0;
+
+messageEl.textContent=
+"Guardian travel complete...";
+
+}
+
+}
+
+
+/* Guardian disappears */
+
+if(guardianLeaving){
+
+guardianLeaveProgress+=delta/1.5;
+
+if(guardianLeaveProgress>1){
+guardianLeaveProgress=1;
+}
+
+var remaining=
+1-guardianLeaveProgress;
+
+finish.style.opacity=
+String(remaining);
+
+finish.style.transform=
+"translate(-50%,-50%) scale("+
+remaining+
+")";
+
+if(guardianLeaveProgress>=1){
+
+finish.style.display="none";
+
+guardianLeaving=false;
+
+levelFinished();
+
+}
+
+}
+
+}
+
+
+/* LEVEL COMPLETE */
+
+function levelFinished(){
+
+playing=false;
+
+clearGame();
+
+if(currentLevel>=10){
+
+startScreen.style.display="flex";
+
+levelTitle.textContent="YOU WIN!";
+
+levelName.textContent=
+"All 10 levels completed";
+
+charactersEl.innerHTML="";
+
+startButton.style.display="none";
+
+againButton.style.display="inline-block";
+
+messageEl.textContent=
+"🏆 NOHS BOSS QUEST COMPLETE!";
+
+return;
+
+}
+
+currentLevel++;
+
+selectedCharacter=currentLevel-1;
+
+updateStats();
+
+showStartScreen();
+
+messageEl.textContent=
+"LEVEL COMPLETE!";
+
+}
+
+
+/* GAME OVER */
+
+function gameOver(){
+
+playing=false;
+
+clearGame();
+
+startScreen.style.display="flex";
+
+levelTitle.textContent="GAME OVER";
+
+levelName.textContent=
+"Try Level "+currentLevel+" again";
+
+showCharacters();
+
+startButton.style.display="inline-block";
+
+againButton.style.display="none";
+
+messageEl.textContent=
+"💔 GAME OVER — press START LEVEL.";
+
+}
+
+
+/* JOYSTICK */
+
+function resetStick(){
+
+stick.style.left="50%";
+stick.style.top="50%";
+
+}
+
+
+function joystickPosition(x,y){
+
+var r=joystick.getBoundingClientRect();
+
+var cx=r.left+r.width/2;
+var cy=r.top+r.height/2;
+
+var dx=x-cx;
+var dy=y-cy;
+
+var max=30;
+
+var d=Math.sqrt(dx*dx+dy*dy);
+
+if(d>max){
+
+dx=(dx/d)*max;
+dy=(dy/d)*max;
+
+}
+
+moveX=dx/max;
+moveY=dy/max;
+
+if(Math.abs(moveX)<.08){
+moveX=0;
+}
+
+if(Math.abs(moveY)<.08){
+moveY=0;
+}
+
+moving=
+moveX!==0 ||
+moveY!==0;
+
+stick.style.left=
+"calc(50% + "+dx+"px)";
+
+stick.style.top=
+"calc(50% + "+dy+"px)";
+
+}
+
+
+joystick.addEventListener(
+"touchstart",
+function(e){
+
+if(!playing)return;
+
+joystickActive=true;
+
+var t=e.touches[0];
+
+joystickPosition(
+t.clientX,
+t.clientY
+);
+
+},
+{passive:true}
+);
+
+
+joystick.addEventListener(
+"touchmove",
+function(e){
+
+if(!joystickActive || !playing){
+return;
+}
+
+var t=e.touches[0];
+
+joystickPosition(
+t.clientX,
+t.clientY
+);
+
+},
+{passive:true}
+);
+
+
+joystick.addEventListener(
+"touchend",
+function(){
+
+joystickActive=false;
+
+moving=false;
+
+moveX=0;
+moveY=0;
+
+resetStick();
+
+},
+{passive:true}
+);
+
+
+joystick.addEventListener(
+"touchcancel",
+function(){
+
+joystickActive=false;
+
+moving=false;
+
+moveX=0;
+moveY=0;
+
+resetStick();
+
+},
+{passive:true}
+);
+
+
+/* FIRE BUTTON */
+
+fireButton.addEventListener(
+"pointerdown",
+function(e){
+
+if(e.pointerType==="touch"){
+e.preventDefault();
+}
+
+fire();
+
+},
+{passive:false}
+);
+
+
+/* KEYBOARD */
+
+document.addEventListener(
+"keydown",
+function(e){
+
+if(e.code==="Space"){
+
+e.preventDefault();
+
+fire();
+
+}
+
+}
+);
+
+
+/* BUTTONS */
+
+startButton.onclick=function(){
+
+startLevel();
+
+};
+
+
+againButton.onclick=function(){
+
+currentLevel=1;
+
+selectedCharacter=0;
+
+updateStats();
+
+showStartScreen();
+
+};
+
+
+/* GAME LOOP */
+
+function loop(time){
+
+if(!playing){
+return;
+}
+
+var delta=
+(time-lastTime)/1000;
+
+if(delta>.05){
+delta=.05;
+}
+
+lastTime=time;
+
+updatePlayer(delta);
+
+updateCollectibles(delta);
+
+updateEnemies(delta);
+
+updateBullets(delta);
+
+updateEnemyShooting(delta);
+
+updateEnemyBullets(delta);
+
+updateFinish(delta);
+
+if(playerX < 0){
+playerX = 0;
+}
+
+if(playerY < 0){
+playerY = 0;
+}
+
+player.style.left = playerX + "px";
+player.style.top = playerY + "px";
+
+requestAnimationFrame(loop);
+
+}
+
+updateStats();
+showStartScreen();
+
+</script>
+
+</body>
+</html>
