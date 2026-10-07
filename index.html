@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#060817">
+<meta name="description" content="NOHS STAR CATCH GOLD — Catch the stars, dodge the danger, and reach the GOLD.">
+<title>NOHS STAR CATCH GOLD</title>
+<style>
+*{box-sizing:border-box}
+:root{--gold:#ffd43b;--gold2:#ffb703;--bg:#060817;--panel:#10162b;--muted:#aeb8d9}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at 50% 0%,#18234d 0%,var(--bg) 55%);color:#fff}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px;overflow-x:hidden}
+body:before,body:after{content:"";position:fixed;border-radius:50%;pointer-events:none;filter:blur(2px);opacity:.35}
+body:before{width:260px;height:260px;background:#3155ff;top:-130px;left:-100px}
+body:after{width:220px;height:220px;background:#ffb703;right:-100px;bottom:-100px}
+main{width:min(720px,100%);position:relative}
+.card{background:rgba(12,17,37,.94);border:1px solid rgba(255,255,255,.12);border-radius:28px;padding:34px 24px 24px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5);backdrop-filter:blur(12px)}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid rgba(255,212,59,.28);border-radius:999px;color:#ffe78a;background:rgba(255,212,59,.07);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.star{font-size:64px;line-height:1;margin:20px 0 12px;text-shadow:0 0 28px rgba(255,212,59,.55)}
+h1{margin:0;font-size:clamp(32px,8vw,58px);line-height:1.05;letter-spacing:.5px}
+.tag{margin:14px auto 28px;max-width:560px;color:var(--muted);font-size:17px;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 22px}
+.stat{padding:17px 10px;border-radius:17px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07)}
+.stat strong{display:block;font-size:25px;margin-bottom:5px}
+.stat span{font-size:12px;color:#8995bb}
+.play{width:100%;border:0;border-radius:16px;padding:17px 22px;font-size:17px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#161616;box-shadow:0 10px 30px rgba(255,183,3,.2);cursor:not-allowed;opacity:.72}
+.note{margin:15px 0 0;color:#7f8bad;font-size:12px}
+.footer{margin-top:18px;color:#596581;font-size:11px;letter-spacing:.4px}
+@media(max-width:480px){body{padding:14px}.card{padding:28px 17px 20px;border-radius:23px}.star{font-size:54px}.stats{grid-template-columns:1fr;gap:9px}.stat{padding:13px}.tag{font-size:15px}}
+</style>
+</head>
+<body>
+<main>
+<section class="card" aria-labelledby="title">
+  <div class="badge">⭐ NOHS ORIGINAL GAME</div>
+  <div class="star" aria-hidden="true">⭐</div>
+  <h1 id="title">NOHS STAR CATCH GOLD</h1>
+  <p class="tag">Catch the stars. Dodge the danger. Reach the GOLD.</p>
+  <div class="stats" aria-label="Game features">
+    <div class="stat"><strong>10</strong><span>LEVELS</span></div>
+    <div class="stat"><strong>5</strong><span>COLLECTIBLES</span></div>
+    <div class="stat"><strong>⚡</strong><span>ACTION</span></div>
+  </div>
+  <button class="play" type="button" disabled>PLAY STAR CATCH GOLD</button>
+  <p class="note">The game will be connected here next.</p>
+  <div class="footer">NOHS • STAR CATCH GOLD</div>
+</section>
+</main>
+</body>
+</html>
